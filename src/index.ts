@@ -1,5 +1,6 @@
-import { Config, AdditionalInfo, Exception } from './types';
+import { Config, AdditionalInfo, Report } from './types';
 import { isValidUrl } from './lib/url';
+import { isSriptError, SCRIPT_ERROR_MESSAGE } from './lib/dom';
 
 let configuration: Config;
 let additionalInformation: AdditionalInfo = {};
@@ -23,7 +24,9 @@ export const init = (config: Config, additionalInfo: AdditionalInfo) => {
   colno: Column number for the line where the error occurred (number)
   error: Error Object (object) */
 const captureException: OnErrorEventHandler = (message, source, lineno, colno, error) => {
-  // TODO: implementation
+  const report = composeException(message, source, lineno, colno, error);
+
+  // TODO: post report obj to service
 };
 
 const captureDomEventTrails = () => {
@@ -33,6 +36,35 @@ const captureDomEventTrails = () => {
   // keep eventStack size small -  configurable in init(?)
 };
 
-const composeException = (exception: Exception, additionalInfo: AdditionalInfo) => {
-  // TODO: implementation
+const composeException = (
+  message: string | Event,
+  source: string | undefined,
+  lineno: number | undefined,
+  colno: number | undefined,
+  error: Error | undefined,
+): Report => {
+  // TODO: add event stack []
+  // add user browser info
+
+  if (isSriptError(message.toString())) {
+    return {
+      exception: {
+        message: SCRIPT_ERROR_MESSAGE,
+      },
+    };
+  }
+
+  const { name, stack } = error || { name: '', stack: '' };
+
+  return {
+    exception: {
+      message: message.toString(),
+      ...(name && { errorName: name }),
+      ...(stack && { stackTrace: stack }),
+      ...(source && { source: source }),
+      ...(lineno && { lineno: lineno }),
+      ...(colno && { colno: colno }),
+      ...additionalInformation,
+    },
+  };
 };
