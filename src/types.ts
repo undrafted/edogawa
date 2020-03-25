@@ -1,5 +1,6 @@
 export interface Config {
   endpoint: string;
+  restToken?: string;
 }
 
 export type Report = {
