@@ -9,7 +9,7 @@ let eventTrail: EventTrail[] = [];
 let restClient: RestClient;
 
 export const init = (config: Config, additionalInfo: AdditionalInfo) => {
-  const { endpoint, restToken } = config;
+  const { endpoint, restToken, maxTrailSize } = config;
   if (!endpoint || !isValidUrl(endpoint)) {
     throw new Error('Invalid url is passed to Edogawa init');
   }
@@ -21,7 +21,7 @@ export const init = (config: Config, additionalInfo: AdditionalInfo) => {
   additionalInformation = additionalInfo;
 
   // listen to usual interactive events
-  attachListeners(eventTrailsCb(eventTrail));
+  attachListeners(eventTrailsCb(eventTrail, maxTrailSize));
 
   /* listen for exceptions, hurray
    https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror */

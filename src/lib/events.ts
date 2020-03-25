@@ -7,7 +7,9 @@ export const attachListeners = (cb: (ev: Event) => void) => {
 };
 
 // TODO: maybe keep the event trail to a maximum length
-export const eventTrailsCb = (eventTrail: EventTrail[]) => (ev: Event) => {
+export const eventTrailsCb = (eventTrail: EventTrail[], maxTrailSize: number = 15) => (
+  ev: Event,
+) => {
   const target = ev.target as Element;
 
   if (target) {
@@ -18,5 +20,9 @@ export const eventTrailsCb = (eventTrail: EventTrail[]) => (ev: Event) => {
       type: ev.type,
       partialInnerText: truncateString(target.innerHTML),
     });
+
+    if (eventTrail.length > maxTrailSize) {
+      eventTrail.shift();
+    }
   }
 };
