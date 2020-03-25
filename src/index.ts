@@ -1,10 +1,10 @@
-import { Config, AdditionalInfo, Report } from './types';
+import { Config, AdditionalInfo, Report, EventTrail } from './types';
 import { isValidUrl } from './lib/url';
 import { isSriptError, SCRIPT_ERROR_MESSAGE } from './lib/dom';
+import { attachListeners, eventTrailsCb } from './lib/events';
 
-let configuration: Config;
 let additionalInformation: AdditionalInfo = {};
-let eventStack: Event[] = [];
+let eventTrail: EventTrail[] = [];
 
 export const init = (config: Config, additionalInfo: AdditionalInfo) => {
   const { endpoint } = config;
@@ -12,8 +12,12 @@ export const init = (config: Config, additionalInfo: AdditionalInfo) => {
     throw new Error('Invalid url is passed to Edogawa init');
   }
 
-  configuration = config;
   additionalInformation = additionalInfo;
+
+  // listen to usual interactive events
+  attachListeners(eventTrailsCb(eventTrail));
+
+  // listen for exceptions, hurray
   window.onerror = captureException;
 };
 
@@ -25,15 +29,10 @@ export const init = (config: Config, additionalInfo: AdditionalInfo) => {
   error: Error Object (object) */
 const captureException: OnErrorEventHandler = (message, source, lineno, colno, error) => {
   const report = composeException(message, source, lineno, colno, error);
+  // clean slate
+  eventTrail = [];
 
   // TODO: post report obj to service
-};
-
-const captureDomEventTrails = () => {
-  // TODO: implementation
-  // bind all interactive listeners
-  // each callback adds an event to the eventStack
-  // keep eventStack size small -  configurable in init(?)
 };
 
 const composeException = (
@@ -43,7 +42,6 @@ const composeException = (
   colno: number | undefined,
   error: Error | undefined,
 ): Report => {
-  // TODO: add event stack []
   // add user browser info
 
   if (isSriptError(message.toString())) {
@@ -66,5 +64,6 @@ const composeException = (
       ...(colno && { colno: colno }),
       ...additionalInformation,
     },
+    trail: eventTrail,
   };
 };

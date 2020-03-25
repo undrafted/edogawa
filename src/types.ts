@@ -11,8 +11,17 @@ export type Report = {
     lineno?: number;
     colno?: number;
   };
+  trail?: EventTrail[];
 };
 
 export type AdditionalInfo = {
   [key in string]: any;
 };
+
+export interface EventTrail {
+  tag: string;
+  id: string;
+  class: string;
+  type: string;
+  partialInnerText: string;
+}
