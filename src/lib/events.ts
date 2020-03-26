@@ -6,10 +6,12 @@ export const attachListeners = (cb: (ev: Event) => void) => {
   document.documentElement.addEventListener('click', cb, true);
 };
 
-// TODO: maybe keep the event trail to a maximum length
-export const eventTrailsCb = (eventTrail: EventTrail[], maxTrailSize: number = 15) => (
-  ev: Event,
-) => {
+export const DEFAULT_MAX_TRAIL_SIZE = 15;
+
+export const eventTrailsCb = (
+  eventTrail: EventTrail[],
+  maxTrailSize: number = DEFAULT_MAX_TRAIL_SIZE,
+) => (ev: Event) => {
   const target = ev.target as Element;
 
   if (target) {
