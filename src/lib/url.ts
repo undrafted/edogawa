@@ -1,3 +1,3 @@
-const URL_VALIDATOR = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+const URL_VALIDATOR = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
 
 export const isValidUrl = (url: string) => URL_VALIDATOR.test(url);

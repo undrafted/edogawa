@@ -11,7 +11,7 @@ let restClient: RestClient;
 export const init = (config: Config, additionalInfo: AdditionalInfo) => {
   const { endpoint, restToken, maxTrailSize } = config;
   if (!endpoint || !isValidUrl(endpoint)) {
-    throw new Error('Invalid url is passed to Edogawa init');
+    throw new Error(`Invalid url is passed to Edogawa init: ${endpoint}`);
   }
 
   // create restClient
