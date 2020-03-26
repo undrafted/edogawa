@@ -11,4 +11,8 @@ describe('truncateString', function() {
       'Lorem ipsum dolor sit amet, consectetur adipiscing...',
     );
   });
+
+  it('doesnt append ... to short string', () => {
+    expect(truncateString('hello world')).to.equal('hello world');
+  });
 });
