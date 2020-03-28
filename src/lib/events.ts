@@ -12,6 +12,7 @@ export const eventTrailsCb = (
   eventTrail: EventTrail[],
   maxTrailSize: number = DEFAULT_MAX_TRAIL_SIZE,
 ) => (ev: Event) => {
+  // TODO: account for non-element targets
   const target = ev.target as Element;
 
   if (target) {
