@@ -4,6 +4,8 @@ export interface Config {
   maxTrailSize?: number;
 }
 
+export type UserInfo = Bowser.Parser.ParsedResult | undefined;
+
 export type Report = {
   exception: {
     name?: string;
@@ -13,6 +15,7 @@ export type Report = {
     lineno?: number;
     colno?: number;
   };
+  userInfo?: UserInfo;
   trail?: EventTrail[];
 };
 

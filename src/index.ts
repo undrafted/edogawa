@@ -1,8 +1,9 @@
-import { Config, AdditionalInfo, Report, EventTrail } from './types';
+import { Config, AdditionalInfo, Report, EventTrail, UserInfo } from './types';
 import { isValidUrl } from './lib/url';
 import { isSriptError, SCRIPT_ERROR_MESSAGE } from './lib/dom';
 import { attachListeners, eventTrailsCb } from './lib/events';
 import { RestClient } from './lib/rest';
+import { getUserInfo } from './lib/user-info';
 
 let additionalInformation: AdditionalInfo = {};
 let eventTrail: EventTrail[] = [];
@@ -45,13 +46,14 @@ const composeException = (
   colno: number | undefined,
   error: Error | undefined,
 ): Report => {
-  // add user browser info
+  const userInfo: UserInfo = getUserInfo(window.navigator.userAgent);
 
   if (isSriptError(message.toString())) {
     return {
       exception: {
         message: SCRIPT_ERROR_MESSAGE,
       },
+      ...(userInfo && { userInfo: userInfo }),
     };
   }
 
@@ -67,6 +69,7 @@ const composeException = (
       ...(colno && { colno: colno }),
       ...additionalInformation,
     },
+    ...(userInfo && { userInfo: userInfo }),
     trail: eventTrail,
   };
 };
