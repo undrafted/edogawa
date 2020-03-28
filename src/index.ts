@@ -8,6 +8,7 @@ import { getUserInfo } from './lib/user-info';
 let additionalInformation: AdditionalInfo = {};
 let eventTrail: EventTrail[] = [];
 let restClient: RestClient;
+let ignoreList: RegExp[] = [];
 
 export const init = (config: Config, additionalInfo?: AdditionalInfo) => {
   const { endpoint, restToken, maxTrailSize } = config;
@@ -23,6 +24,10 @@ export const init = (config: Config, additionalInfo?: AdditionalInfo) => {
     additionalInformation = additionalInfo;
   }
 
+  if (config.ignore) {
+    ignoreList = config.ignore;
+  }
+
   // listen to usual interactive events
   attachListeners(eventTrailsCb(eventTrail, maxTrailSize));
 
@@ -32,11 +37,14 @@ export const init = (config: Config, additionalInfo?: AdditionalInfo) => {
 };
 
 const captureException: OnErrorEventHandler = (message, source, lineno, colno, error) => {
-  const report = composeException(message, source, lineno, colno, error);
-  // clean slate
-  clearEventTrail();
-  // push to endpoint
-  restClient.post(report);
+  //dont do anything if its in ignore list
+  if (ignoreList.some(regexp => regexp.test(message.toString()))) {
+    const report = composeException(message, source, lineno, colno, error);
+    // clean slate
+    clearEventTrail();
+    // push to endpoint
+    restClient.post(report);
+  }
 };
 
 const clearEventTrail = () => {

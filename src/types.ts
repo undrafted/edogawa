@@ -2,6 +2,7 @@ export interface Config {
   endpoint: string;
   restToken?: string;
   maxTrailSize?: number;
+  ignore?: RegExp[];
 }
 
 export type UserInfo = Bowser.Parser.ParsedResult | undefined;
