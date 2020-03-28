@@ -34,9 +34,13 @@ export const init = (config: Config, additionalInfo?: AdditionalInfo) => {
 const captureException: OnErrorEventHandler = (message, source, lineno, colno, error) => {
   const report = composeException(message, source, lineno, colno, error);
   // clean slate
-  eventTrail = [];
+  clearEventTrail();
   // push to endpoint
   restClient.post(report);
+};
+
+const clearEventTrail = () => {
+  eventTrail = [];
 };
 
 const composeException = (
