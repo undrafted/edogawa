@@ -6,10 +6,7 @@
     "declaration": true,
     "outDir": "dist",
     "strict": true,
-    "esModuleInterop": true,
-    "paths": {
-      "~*": ["./*"]
-    }
+    "esModuleInterop": true
   },
   "exclude": ["node_modules", "dist", "example", "tests"],
   "include": ["src"]

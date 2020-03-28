@@ -8,7 +8,7 @@ let additionalInformation: AdditionalInfo = {};
 let eventTrail: EventTrail[] = [];
 let restClient: RestClient;
 
-export const init = (config: Config, additionalInfo: AdditionalInfo) => {
+export const init = (config: Config, additionalInfo?: AdditionalInfo) => {
   const { endpoint, restToken, maxTrailSize } = config;
   if (!endpoint || !isValidUrl(endpoint)) {
     throw new Error(`Invalid url is passed to Edogawa init: ${endpoint}`);
@@ -17,8 +17,10 @@ export const init = (config: Config, additionalInfo: AdditionalInfo) => {
   // create restClient
   restClient = new RestClient(endpoint, restToken);
 
-  // for when we create the report
-  additionalInformation = additionalInfo;
+  if (additionalInfo) {
+    // for when we create the report
+    additionalInformation = additionalInfo;
+  }
 
   // listen to usual interactive events
   attachListeners(eventTrailsCb(eventTrail, maxTrailSize));

@@ -6,8 +6,8 @@
   "author": "undrafted <8jermiedomingo@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "parcel parcel/index.html",
     "test": "mocha -r ts-node/register -r jsdom-global/register src/**/*.spec.ts",
-    "dev": "parcel src/index.html",
     "build": "tsc"
   },
   "devDependencies": {
@@ -22,9 +22,9 @@
     "jsdom": "^16.2.1",
     "jsdom-global": "^3.0.2",
     "mocha": "^7.1.1",
+    "parcel-bundler": "^1.12.4",
     "sinon": "^9.0.1",
     "ts-node": "^8.8.1",
-    "parcel-bundler": "^1.12.4",
     "typescript": "^3.8.3"
   }
 }

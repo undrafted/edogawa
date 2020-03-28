@@ -1,7 +1,7 @@
 export interface Config {
   endpoint: string;
   restToken?: string;
-  maxTrailSize: number;
+  maxTrailSize?: number;
 }
 
 export type Report = {
