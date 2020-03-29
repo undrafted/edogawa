@@ -6,12 +6,11 @@ export const attachListeners = (cb: (ev: Event) => void) => {
   document.documentElement.addEventListener('click', cb, true);
 };
 
+// TODO: this needs refactoring to be a class instance instead
 export const DEFAULT_MAX_TRAIL_SIZE = 15;
+let eventTrail: EventTrail[] = [];
 
-export const eventTrailsCb = (
-  eventTrail: EventTrail[],
-  maxTrailSize: number = DEFAULT_MAX_TRAIL_SIZE,
-) => (ev: Event) => {
+export const eventTrailsCb = (maxTrailSize: number = DEFAULT_MAX_TRAIL_SIZE) => (ev: Event) => {
   // TODO: account for non-element targets
   const target = ev.target as Element;
 
@@ -28,4 +27,9 @@ export const eventTrailsCb = (
       eventTrail.shift();
     }
   }
+};
+
+export const getEventTrail = () => eventTrail;
+export const clearEventTrail = () => {
+  eventTrail = [];
 };

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { attachListeners, eventTrailsCb, DEFAULT_MAX_TRAIL_SIZE } from './events';
-import { EventTrail } from '../types';
+import { attachListeners, eventTrailsCb, DEFAULT_MAX_TRAIL_SIZE, getEventTrail } from './events';
 
 describe('attachListeners', function() {
   it('should call the callback', () => {
@@ -17,9 +16,7 @@ describe('attachListeners', function() {
 
 describe('eventTrailsCb', function() {
   it('should add an event to the event trail', () => {
-    const eventTrail: EventTrail[] = [];
-
-    const cb = eventTrailsCb(eventTrail);
+    const cb = eventTrailsCb();
 
     const target = {
       id: '#mock-id',
@@ -35,8 +32,8 @@ describe('eventTrailsCb', function() {
 
     cb(mockEvent);
 
-    expect(eventTrail.length).to.equal(1);
-    expect(eventTrail[0]).to.deep.equal({
+    expect(getEventTrail().length).to.equal(1);
+    expect(getEventTrail()[0]).to.deep.equal({
       id: target.id,
       class: target.className,
       tag: target.tagName,
@@ -46,9 +43,7 @@ describe('eventTrailsCb', function() {
   });
 
   it('should remove old events from the stack if maxTrailSize is reached', () => {
-    const eventTrail: EventTrail[] = [];
-
-    const cb = eventTrailsCb(eventTrail);
+    const cb = eventTrailsCb();
 
     const createTarget = (id: string): Element =>
       (({
@@ -69,9 +64,9 @@ describe('eventTrailsCb', function() {
       cb(mockEvent(`id-${i}`));
     }
 
-    expect(eventTrail.length).to.equal(DEFAULT_MAX_TRAIL_SIZE);
-    expect(eventTrail[0].id).to.equal(`id-${overflow + 1}`);
-    expect(eventTrail[DEFAULT_MAX_TRAIL_SIZE - 1].id).to.equal(
+    expect(getEventTrail().length).to.equal(DEFAULT_MAX_TRAIL_SIZE);
+    expect(getEventTrail()[0].id).to.equal(`id-${overflow + 1}`);
+    expect(getEventTrail()[DEFAULT_MAX_TRAIL_SIZE - 1].id).to.equal(
       `id-${DEFAULT_MAX_TRAIL_SIZE + overflow}`,
     );
   });
