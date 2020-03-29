@@ -1,10 +1,15 @@
 {
   "name": "edogawa",
-  "version": "0.0.1",
-  "main": "index.js",
-  "repository": "https://github.com/undrafted/edogawa.git",
+  "version": "1.0.3",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/undrafted/evem"
+  },
   "author": "undrafted <8jermiedomingo@gmail.com>",
   "license": "MIT",
+  "prepublish": "test && build",
   "scripts": {
     "start": "parcel example/index.html",
     "test": "mocha -r ts-node/register -r jsdom-global/register src/**/*.spec.ts",
@@ -29,5 +34,13 @@
   },
   "dependencies": {
     "bowser": "^2.9.0"
-  }
+  },
+  "keywords": [
+    "error reporting",
+    "monitoring",
+    "client side reporting",
+    "uncaught errors",
+    "catch errors",
+    "typescript"
+  ]
 }
