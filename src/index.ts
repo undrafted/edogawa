@@ -96,7 +96,7 @@ const composeException = (
   return {
     exception: {
       message: message.toString(),
-      ...(name && { errorName: name }),
+      ...(name && { name: name }),
       ...(stack && { stackTrace: stack }),
       ...(source && { source: source }),
       ...(lineno && { lineno: lineno }),
