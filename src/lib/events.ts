@@ -6,30 +6,36 @@ export const attachListeners = (cb: (ev: Event) => void) => {
   document.documentElement.addEventListener('click', cb, true);
 };
 
-// TODO: this needs refactoring to be a class instance instead
-export const DEFAULT_MAX_TRAIL_SIZE = 15;
-let eventTrail: EventTrail[] = [];
+export class EventTrailManager {
+  static DEFAULT_MAX_TRAIL_SIZE = 15;
+  private maxTrailSize: number = EventTrailManager.DEFAULT_MAX_TRAIL_SIZE;
+  private eventTrail: EventTrail[] = [];
 
-export const eventTrailsCb = (maxTrailSize: number = DEFAULT_MAX_TRAIL_SIZE) => (ev: Event) => {
-  // TODO: account for non-element targets
-  const target = ev.target as Element;
-
-  if (target) {
-    eventTrail.push({
-      id: target.id,
-      class: target.className,
-      tag: target.tagName,
-      type: ev.type,
-      partialInnerText: truncateString(target.innerHTML),
-    });
-
-    if (eventTrail.length > maxTrailSize) {
-      eventTrail.shift();
-    }
+  constructor(maxTrailSize: number = EventTrailManager.DEFAULT_MAX_TRAIL_SIZE) {
+    this.maxTrailSize = maxTrailSize;
   }
-};
 
-export const getEventTrail = () => eventTrail;
-export const clearEventTrail = () => {
-  eventTrail = [];
-};
+  callback = (ev: Event) => {
+    const target = ev.target as Element;
+
+    if (target) {
+      this.eventTrail.push({
+        id: target.id,
+        class: target.className,
+        tag: target.tagName,
+        type: ev.type,
+        partialInnerText: truncateString(target.innerHTML),
+      });
+
+      if (this.eventTrail.length > this.maxTrailSize) {
+        this.eventTrail.shift();
+      }
+    }
+  };
+
+  getEventTrail = () => this.eventTrail;
+
+  clearEventTrail = () => {
+    this.eventTrail = [];
+  };
+}

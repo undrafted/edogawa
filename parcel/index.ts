@@ -1,4 +1,3 @@
-// TODO: example of error catching
 import { init as initEdogawa } from '../src';
 import { Report } from '../src/types';
 

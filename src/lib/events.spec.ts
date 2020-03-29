@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { attachListeners, eventTrailsCb, DEFAULT_MAX_TRAIL_SIZE, getEventTrail } from './events';
+import { attachListeners, EventTrailManager } from './events';
 
 describe('attachListeners', function() {
   it('should call the callback', () => {
@@ -16,7 +16,7 @@ describe('attachListeners', function() {
 
 describe('eventTrailsCb', function() {
   it('should add an event to the event trail', () => {
-    const cb = eventTrailsCb();
+    const evTrail = new EventTrailManager();
 
     const target = {
       id: '#mock-id',
@@ -30,10 +30,10 @@ describe('eventTrailsCb', function() {
       target,
     } as unknown) as Event;
 
-    cb(mockEvent);
+    evTrail.callback(mockEvent);
 
-    expect(getEventTrail().length).to.equal(1);
-    expect(getEventTrail()[0]).to.deep.equal({
+    expect(evTrail.getEventTrail().length).to.equal(1);
+    expect(evTrail.getEventTrail()[0]).to.deep.equal({
       id: target.id,
       class: target.className,
       tag: target.tagName,
@@ -43,7 +43,7 @@ describe('eventTrailsCb', function() {
   });
 
   it('should remove old events from the stack if maxTrailSize is reached', () => {
-    const cb = eventTrailsCb();
+    const evTrail = new EventTrailManager();
 
     const createTarget = (id: string): Element =>
       (({
@@ -60,14 +60,24 @@ describe('eventTrailsCb', function() {
       } as unknown) as Event);
 
     const overflow = 5;
-    for (let i = 0; i <= DEFAULT_MAX_TRAIL_SIZE + overflow; i++) {
-      cb(mockEvent(`id-${i}`));
+    for (let i = 0; i <= EventTrailManager.DEFAULT_MAX_TRAIL_SIZE + overflow; i++) {
+      evTrail.callback(mockEvent(`id-${i}`));
     }
 
-    expect(getEventTrail().length).to.equal(DEFAULT_MAX_TRAIL_SIZE);
-    expect(getEventTrail()[0].id).to.equal(`id-${overflow + 1}`);
-    expect(getEventTrail()[DEFAULT_MAX_TRAIL_SIZE - 1].id).to.equal(
-      `id-${DEFAULT_MAX_TRAIL_SIZE + overflow}`,
+    expect(evTrail.getEventTrail().length).to.equal(EventTrailManager.DEFAULT_MAX_TRAIL_SIZE);
+    expect(evTrail.getEventTrail()[0].id).to.equal(`id-${overflow + 1}`);
+    expect(evTrail.getEventTrail()[EventTrailManager.DEFAULT_MAX_TRAIL_SIZE - 1].id).to.equal(
+      `id-${EventTrailManager.DEFAULT_MAX_TRAIL_SIZE + overflow}`,
     );
+
+    const trailSize = 25;
+    const evTrail2 = new EventTrailManager(trailSize);
+    for (let i = 0; i <= trailSize + overflow; i++) {
+      evTrail2.callback(mockEvent(`id-${i}`));
+    }
+
+    expect(evTrail2.getEventTrail().length).to.equal(trailSize);
+    expect(evTrail2.getEventTrail()[0].id).to.equal(`id-${overflow + 1}`);
+    expect(evTrail2.getEventTrail()[trailSize - 1].id).to.equal(`id-${trailSize + overflow}`);
   });
 });

@@ -1,6 +1,6 @@
-import { Config, Report, EventTrail, UserInfo, DevConfig } from './types';
+import { Config, Report, UserInfo, DevConfig } from './types';
 import { isSriptError, SCRIPT_ERROR_MESSAGE } from './lib/dom';
-import { attachListeners, eventTrailsCb, clearEventTrail, getEventTrail } from './lib/events';
+import { attachListeners, EventTrailManager } from './lib/events';
 import { RestClient } from './lib/rest';
 import { getUserInfo } from './lib/user-info';
 
@@ -8,6 +8,7 @@ let restClient: RestClient;
 let exceptionCb: (report: Report) => void;
 let devConfiguration: DevConfig = { clientSideDebug: false };
 let configuration: Config = { ignore: [], additionalInfo: {}, endpoint: '' };
+let evTrail: EventTrailManager;
 
 export const init = (
   config: Config,
@@ -37,8 +38,10 @@ export const init = (
     devConfiguration = devConfig;
   }
 
+  evTrail = new EventTrailManager(config.maxTrailSize);
+
   // listen to usual interactive events
-  attachListeners(eventTrailsCb(maxTrailSize));
+  attachListeners(evTrail.callback);
 
   /* listen for exceptions, hurray
    https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror */
@@ -57,7 +60,7 @@ const captureException: OnErrorEventHandler = (message, source, lineno, colno, e
   const report = composeException(message, source, lineno, colno, error);
 
   // clean slate
-  clearEventTrail();
+  evTrail.clearEventTrail();
 
   if (!devConfiguration.clientSideDebug) {
     // push to endpoint
@@ -100,6 +103,6 @@ const composeException = (
       ...configuration.additionalInfo,
     },
     ...(userInfo && { userInfo: userInfo }),
-    trail: getEventTrail(),
+    trail: evTrail.getEventTrail(),
   };
 };
