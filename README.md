@@ -1,6 +1,6 @@
 # Edogawa
 
-Browser utility library to report uncaught errors of your app in the DOM with the help of exeption, event trails and user browser reports object. See an example of a report object below.
+Browser utility library to report uncaught errors in your app in the DOM. The library creates a Report object that contains the exception, event trails and the user browser. See an [example of a report object here](https://github.com/undrafted/edogawa#sample-report-object).
 
 ## Installation
 
@@ -21,13 +21,13 @@ yarn add edogawa
 #### Initialize an Edogawa instance in your client entry code (or wherever you prefer)
 
 ```js
-import { init } from '../src';
+import { init } from 'edogawa';
 
 /* voila, you're done.
 No further steps are needed.
 The library will now listen to uncaught errors
 and send the report to the given endpoint */
-init({ endpoint = 'https://yourapp.com' });
+init({ endpoint = 'https://yourapp.com/reports' });
 ```
 
 #### Edogawa init API
@@ -74,7 +74,7 @@ export interface DevConfig {
 
 #### Edogawa Report object
 
-Edogawa returns a `Report` object when an exception is caught. The structure is:
+Edogawa returns a `Report` object when an exception is caught. See example generated report [below](https://github.com/undrafted/edogawa#sample-report-object). The structure is:
 
 ```js
 export type Report = {
@@ -94,10 +94,10 @@ export type Report = {
 /* Taken from Parsed result of Bowser( https://github.com/lancedikson/bowser)*/
 interface UserInfo {
   userInfo: {
-    browser: { name: 'Chrome', version: '80.0.3987.149' },
-    os: { name: 'macOS', version: '10.14.5', versionName: 'Mojave' },
-    platform: { type: 'desktop', vendor: 'Apple' },
-    engine: { name: 'Blink' }
+    browser: { name: string, version: string },
+    os: { name: string, version: string, versionName: string },
+    platform: { type: string, vendor: string },
+    engine: { name: string }
   };
 }
 
