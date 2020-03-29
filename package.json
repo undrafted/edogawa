@@ -9,11 +9,11 @@
   },
   "author": "undrafted <8jermiedomingo@gmail.com>",
   "license": "MIT",
-  "prepublish": "test && build",
   "scripts": {
+    "prepublish": "yarn test && yarn build",
     "start": "parcel example/index.html",
     "test": "mocha -r ts-node/register -r jsdom-global/register src/**/*.spec.ts",
-    "build": "tsc"
+    "build": "rm -rf dist && tsc"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
