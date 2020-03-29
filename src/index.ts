@@ -25,6 +25,7 @@ export const init = (
     ignore,
     additionalInfo,
     endpoint,
+    maxTrailSize,
   };
 
   // create restClient
