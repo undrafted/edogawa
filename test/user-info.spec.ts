@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getUserInfo } from './user-info';
+import { getUserInfo } from '../src/lib/user-info';
 
 describe('getUserInfo', function() {
   const mockUser = {

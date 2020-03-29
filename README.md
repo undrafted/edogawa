@@ -27,7 +27,7 @@ import { init } from 'edogawa';
 No further steps are needed.
 The library will now listen to uncaught errors
 and send the report to the given endpoint */
-init({ endpoint = 'https://yourapp.com/reports' });
+init({ endpoint: 'https://yourapp.com/reports' });
 ```
 
 #### Edogawa init API

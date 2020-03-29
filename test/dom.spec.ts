@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { isSriptError } from './dom';
+import { isSriptError } from '../src/lib/dom';
 
 describe('isSriptError', function() {
   it('should return true for script errors', () => {

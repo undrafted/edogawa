@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { attachListeners, EventTrailManager } from './events';
+import { attachListeners, EventTrailManager } from '../src/lib/events';
 
 describe('attachListeners', function() {
   it('should call the callback', () => {

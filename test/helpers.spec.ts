@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { truncateString } from './helpers';
+import { truncateString } from '../src/lib/helpers';
 
 describe('truncateString', function() {
   it('truncate long string', () => {

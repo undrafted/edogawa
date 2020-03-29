@@ -8,6 +8,6 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "dist", "example", "tests"],
+  "exclude": ["node_modules", "dist", "example", "test"],
   "include": ["src"]
 }

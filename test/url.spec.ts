@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { isValidUrl } from './url';
+import { isValidUrl } from '../src/lib/url';
 
 describe('isValidUrl', function() {
   it('returns true on valid urls', () => {
