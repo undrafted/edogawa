@@ -6,7 +6,7 @@
   "author": "undrafted <8jermiedomingo@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel parcel/index.html",
+    "start": "parcel example/index.html",
     "test": "mocha -r ts-node/register -r jsdom-global/register src/**/*.spec.ts",
     "build": "tsc"
   },
