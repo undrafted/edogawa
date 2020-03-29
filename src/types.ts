@@ -3,6 +3,13 @@ export interface Config {
   restToken?: string;
   maxTrailSize?: number;
   ignore?: RegExp[];
+  additionalInfo?: {
+    [key in string]: any;
+  };
+}
+
+export interface DevConfig {
+  clientSideDebug?: boolean;
 }
 
 export type UserInfo = Bowser.Parser.ParsedResult | undefined;
@@ -18,10 +25,6 @@ export type Report = {
   };
   userInfo?: UserInfo;
   trail?: EventTrail[];
-};
-
-export type AdditionalInfo = {
-  [key in string]: any;
 };
 
 export interface EventTrail {

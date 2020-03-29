@@ -1,31 +1,41 @@
-import { Config, AdditionalInfo, Report, EventTrail, UserInfo } from './types';
-import { isValidUrl } from './lib/url';
+import { Config, Report, EventTrail, UserInfo, DevConfig } from './types';
 import { isSriptError, SCRIPT_ERROR_MESSAGE } from './lib/dom';
 import { attachListeners, eventTrailsCb } from './lib/events';
 import { RestClient } from './lib/rest';
 import { getUserInfo } from './lib/user-info';
 
-let additionalInformation: AdditionalInfo = {};
-let eventTrail: EventTrail[] = [];
 let restClient: RestClient;
-let ignoreList: RegExp[] = [];
+let eventTrail: EventTrail[] = [];
+let exceptionCb: (report: Report) => void;
+let devConfiguration: DevConfig = { clientSideDebug: false };
+let configuration: Config = { ignore: [], additionalInfo: {}, endpoint: '' };
 
-export const init = (config: Config, additionalInfo?: AdditionalInfo) => {
-  const { endpoint, restToken, maxTrailSize } = config;
-  if (!endpoint || !isValidUrl(endpoint)) {
+export const init = (
+  config: Config,
+  exceptionCallback?: (report: Report) => void,
+  devConfig?: DevConfig,
+) => {
+  const { endpoint, restToken, maxTrailSize, ignore = [], additionalInfo = {} } = config;
+
+  if (!endpoint) {
     throw new Error(`Invalid url is passed to Edogawa init: ${endpoint}`);
   }
+
+  configuration = {
+    ignore,
+    additionalInfo,
+    endpoint,
+  };
 
   // create restClient
   restClient = new RestClient(endpoint, restToken);
 
-  if (additionalInfo) {
-    // for when we create the report
-    additionalInformation = additionalInfo;
+  if (exceptionCallback) {
+    exceptionCb = exceptionCallback;
   }
 
-  if (config.ignore) {
-    ignoreList = config.ignore;
+  if (devConfig) {
+    devConfiguration = devConfig;
   }
 
   // listen to usual interactive events
@@ -38,12 +48,25 @@ export const init = (config: Config, additionalInfo?: AdditionalInfo) => {
 
 const captureException: OnErrorEventHandler = (message, source, lineno, colno, error) => {
   //dont do anything if its in ignore list
-  if (ignoreList.some(regexp => regexp.test(message.toString()))) {
-    const report = composeException(message, source, lineno, colno, error);
-    // clean slate
-    clearEventTrail();
+  if (
+    configuration.ignore &&
+    configuration.ignore.some(regexp => regexp.test(message.toString()))
+  ) {
+    return;
+  }
+
+  const report = composeException(message, source, lineno, colno, error);
+
+  // clean slate
+  clearEventTrail();
+
+  if (!devConfiguration.clientSideDebug) {
     // push to endpoint
     restClient.post(report);
+  }
+
+  if (exceptionCb) {
+    exceptionCb(report);
   }
 };
 
@@ -79,7 +102,7 @@ const composeException = (
       ...(source && { source: source }),
       ...(lineno && { lineno: lineno }),
       ...(colno && { colno: colno }),
-      ...additionalInformation,
+      ...configuration.additionalInfo,
     },
     ...(userInfo && { userInfo: userInfo }),
     trail: eventTrail,
