@@ -44,12 +44,10 @@ export const init = (
   // listen to usual interactive events
   attachListeners(evTrail.callback);
 
-  /* listen for exceptions, hurray
-   https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror */
-  window.onerror = captureException;
+  window.addEventListener('error', captureException);
 };
 
-const captureException: OnErrorEventHandler = (message, source, lineno, colno, error) => {
+const captureException = ({ message, filename, lineno, colno, error }: ErrorEvent) => {
   //dont do anything if its in ignore list
   if (
     configuration.ignore &&
@@ -58,7 +56,7 @@ const captureException: OnErrorEventHandler = (message, source, lineno, colno, e
     return;
   }
 
-  const report = composeException(message, source, lineno, colno, error);
+  const report = composeException(message, filename, lineno, colno, error);
 
   // clean slate
   evTrail.clearEventTrail();
@@ -75,7 +73,7 @@ const captureException: OnErrorEventHandler = (message, source, lineno, colno, e
 
 const composeException = (
   message: string | Event,
-  source: string | undefined,
+  filename: string | undefined,
   lineno: number | undefined,
   colno: number | undefined,
   error: Error | undefined,
@@ -98,7 +96,7 @@ const composeException = (
       message: message.toString(),
       ...(name && { name: name }),
       ...(stack && { stackTrace: stack }),
-      ...(source && { source: source }),
+      ...(filename && { source: filename }),
       ...(lineno && { lineno: lineno }),
       ...(colno && { colno: colno }),
       ...configuration.additionalInfo,
