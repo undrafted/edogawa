@@ -1,9 +1,13 @@
 import { EventTrail } from '../types';
 import { truncateString } from './helpers';
 
+// lets just listen to click and submit for now as they are the most common
+const events = ['click', 'submit'];
+
 export const attachListeners = (cb: (ev: Event) => void) => {
-  // lets just listen to click for now as its the most common
-  document.documentElement.addEventListener('click', cb, true);
+  for (let i = 0; i < events.length; i++) {
+    document.documentElement.addEventListener(events[i], cb, true);
+  }
 };
 
 export class EventTrailManager {
