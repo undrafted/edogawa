@@ -1,10 +1,39 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <style>
+      body {
+        margin: 24px;
+      }
+
+      span.note {
+        color: green;
+      }
+      button {
+        padding: 10px;
+        margin-right: 16px;
+        border-radius: 4px;
+        outline: none;
+      }
+      button:hover {
+        cursor: pointer;
+      }
+      p {
+        line-height: 1.2em;
+      }
+    </style>
+  </head>
   <body>
-    <h1 style="font-size: 16px; color: green">
-      Open dev console to see the lib in action before clicking the buttons below:
-    </h1>
+    <h1>Edogawa Example</h1>
+    <p>
+      <span class="note">OPEN YOUR DEV CONSOLE</span>
+      to see the lib in action before clicking the buttons below:
+    </p>
     <div id="app"></div>
     <script src="./index.ts"></script>
+    <p>
+      Note: If you want debug your custom endpoint, remove {clientSideDebug: true} from this
+      example's index.ts. (found in /examples/index.ts)
+    </p>
   </body>
 </html>
