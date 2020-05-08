@@ -2,7 +2,7 @@ import { Report } from '../types';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_BASE = 5000;
-const WAIT = 2000;
+const THROTTLE_WAIT = 3000;
 
 export class RestClient {
   endPoint: string;
@@ -16,14 +16,13 @@ export class RestClient {
 
   // all reports are still pushed, but will be spreaded out if there is anything pending
   throttledPost(params: Report) {
+    this.throttlingCalls += 1;
     setTimeout(() => {
       this.post(params);
       if (this.throttlingCalls > 0) {
         this.throttlingCalls -= 1;
       }
-    }, this.throttlingCalls * WAIT);
-
-    this.throttlingCalls += 1;
+    }, this.throttlingCalls * THROTTLE_WAIT);
   }
 
   post(params: Report, tries: number = 1) {

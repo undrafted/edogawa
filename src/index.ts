@@ -51,7 +51,7 @@ const captureException = ({ message, filename, lineno, colno, error }: ErrorEven
   //dont do anything if its in ignore list
   if (
     configuration.ignore &&
-    configuration.ignore.some(regexp => regexp.test(message.toString()))
+    configuration.ignore.some((regexp) => regexp.test(message.toString()))
   ) {
     return;
   }
@@ -63,7 +63,7 @@ const captureException = ({ message, filename, lineno, colno, error }: ErrorEven
 
   if (!devConfiguration.clientSideDebug) {
     // push to endpoint
-    restClient.post(report);
+    restClient.throttledPost(report);
   }
 
   if (exceptionCb) {
