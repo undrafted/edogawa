@@ -8,6 +8,9 @@ export class RestClient {
   }
 
   post(params: any) {
+    let tries = 1;
+    const RETRY_DELAY = 5000;
+
     try {
       const fetch = window.fetch || fetchPolyfill;
 
@@ -17,9 +20,16 @@ export class RestClient {
           ...(this.token && { token: this.token }),
           data: params,
         }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     } catch (e) {
-      console.log('Failed to push edogawa exception: ', e);
+      console.log('failed to push edogawa exception: ', e);
+      if (tries < 3) {
+        tries++;
+        setTimeout(() => {}, tries * RETRY_DELAY);
+      }
     }
   }
 }
@@ -29,6 +39,14 @@ const fetchPolyfill = (url: string, options: RequestInit = {}) => {
     const xhr = new XMLHttpRequest();
 
     xhr.open(options.method || 'GET', url);
+    if (options.headers) {
+      Object.keys(options.headers).forEach((h) => {
+        // TS hack
+        const header = (options.headers as { [key in string]: any })[h];
+        xhr.setRequestHeader(header, header);
+      });
+    }
+
     xhr.onload = () => {
       resolve({
         status: xhr.status,
