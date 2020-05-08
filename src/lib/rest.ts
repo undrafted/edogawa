@@ -1,15 +1,32 @@
+import { Report } from '../types';
+
+const RETRY_DELAY = 5000;
+const WAIT = 2000;
+
 export class RestClient {
   endPoint: string;
   token: string | undefined;
+  throttlingCalls = 0;
 
   constructor(endpoint: string, restToken?: string) {
     this.endPoint = endpoint;
     this.token = restToken;
   }
 
-  post(params: any) {
+  // all reports are still pushed, but will be spreaded out if there is anything pending
+  throttledPost(params: Report) {
+    setTimeout(() => {
+      this.post(params);
+      if (this.throttlingCalls > 0) {
+        this.throttlingCalls -= 1;
+      }
+    }, this.throttlingCalls * WAIT);
+
+    this.throttlingCalls += 1;
+  }
+
+  post(params: Report) {
     let tries = 1;
-    const RETRY_DELAY = 5000;
 
     try {
       const fetch = window.fetch || fetchPolyfill;
