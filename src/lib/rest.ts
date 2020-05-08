@@ -1,6 +1,7 @@
 import { Report } from '../types';
 
-const RETRY_DELAY = 5000;
+const MAX_RETRIES = 3;
+const RETRY_DELAY_BASE = 5000;
 const WAIT = 2000;
 
 export class RestClient {
@@ -25,29 +26,26 @@ export class RestClient {
     this.throttlingCalls += 1;
   }
 
-  post(params: Report) {
-    let tries = 1;
+  post(params: Report, tries: number = 1) {
+    const fetch = window.fetch || fetchPolyfill;
 
-    try {
-      const fetch = window.fetch || fetchPolyfill;
-
-      fetch(this.endPoint, {
-        method: 'POST',
-        body: JSON.stringify({
-          ...(this.token && { token: this.token }),
-          data: params,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    } catch (e) {
+    fetch(this.endPoint, {
+      method: 'POST',
+      body: JSON.stringify({
+        ...(this.token && { token: this.token }),
+        data: params,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).catch((e) => {
       console.log('failed to push edogawa exception: ', e);
-      if (tries < 3) {
-        tries++;
-        setTimeout(() => {}, tries * RETRY_DELAY);
+      if (tries < MAX_RETRIES) {
+        setTimeout(() => {
+          this.post(params, ++tries);
+        }, tries * RETRY_DELAY_BASE);
       }
-    }
+    });
   }
 }
 
