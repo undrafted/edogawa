@@ -38,7 +38,7 @@ export class RestClient {
         'Content-Type': 'application/json',
       },
     }).catch((e) => {
-      console.log('failed to push edogawa exception: ', e);
+      console.error('failed to push edogawa exception: ', e);
       if (tries < MAX_RETRIES) {
         setTimeout(() => {
           this.post(params, ++tries);
