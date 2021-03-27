@@ -44,7 +44,7 @@ export const init = (
   // listen to usual interactive events
   attachListeners(evTrail.callback);
 
-  window.addEventListener('error', captureException);
+  self.addEventListener('error', captureException);
 };
 
 const captureException = ({ message, filename, lineno, colno, error }: ErrorEvent) => {
@@ -78,7 +78,7 @@ const composeException = (
   colno: number | undefined,
   error: Error | undefined,
 ): Report => {
-  const userInfo: UserInfo = getUserInfo(window.navigator.userAgent);
+  const userInfo: UserInfo = getUserInfo(self.navigator.userAgent);
 
   if (isSriptError(message.toString())) {
     return {

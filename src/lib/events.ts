@@ -5,8 +5,11 @@ import { truncateString } from './helpers';
 const events = ['click', 'submit'];
 
 export const attachListeners = (cb: (ev: Event) => void) => {
+  if(self.document == null) {
+    return;
+  }
   for (let i = 0; i < events.length; i++) {
-    document.documentElement.addEventListener(events[i], cb, true);
+    self.document.documentElement.addEventListener(events[i], cb, true);
   }
 };
 

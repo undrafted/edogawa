@@ -26,7 +26,7 @@ export class RestClient {
   }
 
   post(params: Report, tries: number = 1) {
-    const fetch = window.fetch || fetchPolyfill;
+    const fetch = self.fetch || fetchPolyfill;
 
     fetch(this.endPoint, {
       method: 'POST',
