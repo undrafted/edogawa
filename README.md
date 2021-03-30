@@ -23,12 +23,13 @@ yarn add edogawa
 ```js
 import { init } from 'edogawa';
 
-/* voila, you're done.
-No further steps are needed.
-The library will now listen to uncaught errors
-and send the report to the given endpoint */
 init({ endpoint: 'https://yourapp.com/reports' });
 ```
+
+Voila, you're done.
+No further steps are needed on the client. The library will now listen to uncaught errors and send the report to the given endpoint.
+
+You can setup your server endpoint as you like - to accept the [report object](https://github.com/undrafted/edogawa#sample-report-object).
 
 #### Edogawa init API
 
@@ -84,11 +85,11 @@ export type Report = {
     message?: string,
     source?: string,
     lineno?: number,
-    colno?: number
+    colno?: number,
   },
   userInfo?: UserInfo,
   /* See EventTrail object structure below */
-  trail?: EventTrail[]
+  trail?: EventTrail[],
 };
 
 /* Taken from Parsed result of Bowser( https://github.com/lancedikson/bowser)*/
@@ -97,7 +98,7 @@ interface UserInfo {
     browser: { name: string, version: string },
     os: { name: string, version: string, versionName: string },
     platform: { type: string, vendor: string },
-    engine: { name: string }
+    engine: { name: string },
   };
 }
 
@@ -125,14 +126,14 @@ const report: Report = {
       'Error: custom error↵    at HTMLButtonElement.<anonymous> (http://yourapp.com/app.77de5100.js)',
     source: 'http://yourapp.com/app.77de5100.js',
     lineno: 468,
-    colno: 9
+    colno: 9,
   },
   // user info (obv.)
   userInfo: {
     browser: { name: 'Chrome', version: '80.0.3987.149' },
     os: { name: 'macOS', version: '10.14.5', versionName: 'Mojave' },
     platform: { type: 'desktop', vendor: 'Apple' },
-    engine: { name: 'Blink' }
+    engine: { name: 'Blink' },
   },
   // the events that happened before the exception
   trail: [
@@ -141,9 +142,9 @@ const report: Report = {
       class: 'class-button-2',
       tag: 'BUTTON',
       type: 'click',
-      partialInnerText: 'Click to throw an error'
-    }
-  ]
+      partialInnerText: 'Click to throw an error',
+    },
+  ],
 };
 ```
 
