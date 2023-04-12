@@ -34,3 +34,9 @@ export interface EventTrail {
   type: string;
   partialInnerText: string;
 }
+
+export type ReporterConstructor = (
+  config: Config,
+  exceptionCallback?: (report: Report) => void,
+  devConfig?: DevConfig,
+) => void;

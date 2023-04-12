@@ -1,4 +1,4 @@
-import { init as initEdogawa } from '../src';
+import * as edogawa from '../src';
 import { Report } from '../src/types';
 
 const fakeEndpoint = 'http://http://localhost:8080';
@@ -9,7 +9,7 @@ const exceptionCb = (report: Report) => {
   console.log('=================');
 };
 
-initEdogawa({ endpoint: fakeEndpoint }, exceptionCb, { clientSideDebug: true });
+edogawa.createReporter({ endpoint: fakeEndpoint }, exceptionCb, { clientSideDebug: true });
 
 let app = document.getElementById('app') as HTMLElement;
 

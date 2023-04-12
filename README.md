@@ -18,12 +18,12 @@ yarn add edogawa
 
 ## Usage
 
-#### Initialize an Edogawa instance in your client entry code (or wherever you prefer)
+#### Initialize an instance in your client entry code (or wherever you prefer)
 
 ```js
-import { init } from 'edogawa';
+import { createReporter } from 'edogawa';
 
-init({ endpoint: 'https://yourapp.com/reports' });
+createReporter({ endpoint: 'https://yourapp.com/reports' });
 ```
 
 Voila, you're done.
@@ -31,12 +31,14 @@ No further steps are needed on the client. The library will now listen to uncaug
 
 You can setup your server endpoint as you like - to accept the [report object](https://github.com/undrafted/edogawa#sample-report-object).
 
-#### Edogawa init API
+### API
 
-Edogawa accepts parameters that could be helpful for your debugging
+#### createReporter
+
+`createReporter` to initialize a reporter instance. It also accepts parameters that could be helpful for your debugging.
 
 ```js
-init = (
+createReporter = (
   /* See Config object below */
   config: Config,
   /* for your custom client side callback */
@@ -47,7 +49,7 @@ init = (
 
 // Config Object accepted in init
 interface Config {
-  /* Your server endpoint that accepts an Edogawa report.
+  /* Your server endpoint that accepts an error report.
   See the structure of the report below */
   endpoint: string;
 
@@ -58,8 +60,8 @@ interface Config {
   maxTrailSize?: number;
 
   /* you might want to ignore some common errors that are caused by browser extensions, etc. */
-
   ignore?: RegExp[];
+
   additionalInfo?: {
     [key in string]: any;
   };
@@ -73,9 +75,27 @@ export interface DevConfig {
 }
 ```
 
-#### Edogawa Report object
+#### captureException
 
-Edogawa returns a `Report` object when an exception is caught. See example generated report [below](https://github.com/undrafted/edogawa#sample-report-object). The structure is:
+A `captureException` function is exposed for custom error capturing. Use it after initiazing the reporter object.
+
+```js
+import { captureException } from 'edogawa';
+
+try {
+  ...
+} catch (e){
+  captureException(new Error('...'))
+}
+```
+
+#### destroy
+
+Call `destroy` to delete the instance of the reporter.
+
+#### Report object
+
+A `Report` object is created when an exception is caught. See example generated report [below](https://github.com/undrafted/edogawa#sample-report-object). The structure is:
 
 ```js
 export type Report = {
